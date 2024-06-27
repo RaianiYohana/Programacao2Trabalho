@@ -28,3 +28,47 @@ app.get("/vendedor/:id", function(req, res){
 })
 
 
+app.post("/vendedor/", function( req, res){
+  const vendedorNovo = {
+    id: vendedor.length + 1,
+    nome: req.body.nome,
+    idade: req.body.cnpj
+  };
+  vendedor.push( vendedorNovo );
+  res.send( vendedorNovo);
+});
+
+app.put("/pessoa/:id", function(req, res){
+  const vendedorEncontrado = vendedor.find( function( vendedorAtual){
+    return vendedorAtual.id == parseInt( req.params.id)
+  })
+  if(!vendedorEncontrado){
+    res.status( 404 ).send({})
+  }else {
+    vendedorEncontrado.nome = req.body.nome
+    vendedorEncontrado.cnpj = req.body.cnpj
+    res.send( vendedorEncontrado)
+  }
+});
+
+app.delete("/vendedor/:id", function(req, res){
+  const vendedorEncontrado = vendedor.find(function( vendedorAtual){
+    return vendedorAtual.id == parseInt(req.params.id)
+  });
+if( !vendedorEncontrado ){
+  res.status( 404 ).send( {} );
+} else{
+  const indexVendedor = pessoas.indexOf( vendedorEncontrado);
+  vendedor.splice(indexVendedor, 1);
+  res.send({});
+}
+})
+
+//questão 3 de subconjunto (Vendedor para pneu)
+app.post("/vendedor/nome/:nome", async function(req,res){
+  const vendedorSele = await vendedor.vendedor.findALL 
+{
+  include: { model:pneus.pneus}
+  where: { nome:req.params.nome}
+}
+})
