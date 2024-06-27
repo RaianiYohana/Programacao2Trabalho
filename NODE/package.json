@@ -1,3 +1,4 @@
+
 {
   "name": "programacao2trabalho",
   "version": "1.0.0",
@@ -5,7 +6,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-     "start": "nodemon indexVendedor.js" 
+      "start": "nodemon index.js"
   },
   "keywords": [],
   "author": "",
@@ -18,3 +19,4 @@
     "express": "^4.19.2"
   }
 }
+

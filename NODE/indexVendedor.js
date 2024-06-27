@@ -27,6 +27,7 @@ app.get("/vendedor/:id", function(req, res){
   }
 })
 
+
 app.post("/vendedor/", function( req, res){
   const vendedorNovo = {
     id: vendedor.length + 1,
@@ -63,3 +64,11 @@ if( !vendedorEncontrado ){
 }
 })
 
+//questão 3 de subconjunto (Vendedor para pneu)
+app.post("/vendedor/nome/:nome", async function(req,res){
+  const vendedorSele = await vendedor.vendedor.findALL 
+{
+  include: { model:pneus.pneus}
+  where: { nome:req.params.nome}
+}
+})
