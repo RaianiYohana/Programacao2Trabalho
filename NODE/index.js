@@ -91,6 +91,7 @@ app.post("/vendedor/nome/:nome", async function(req,res){
 }
 })
 
+//4 - vendedor
 
 
 
