@@ -1,6 +1,12 @@
+const banco = require("./banco")
 const express = require('express')
 const app = express()
 app.use(express.json())
+
+
+banco.conexao.sync( function(){
+  console.log("Banco de dados conectado.");
+})
 
 const vendedor = [
 {id:1, nome: "Celso Rescarolli", cnpj:"01.222.770/0002-00"}
@@ -11,64 +17,69 @@ app.listen( PORTA, function(){
   console.log("Servidor iniciados na porta" +PORTA)  
 })
 
-app.get("/vendedor/", function (req,res){
-  res.send( vendedor )
+app.get("/vendedor/", async function (req,res){
+  const resultado = await vendedor.vendedor.findAll()
+res.send(resultado);
 })
 
-app.get("/vendedor/:id", function(req, res){
-  var vendedorEncontrado = vendedor.find( function( vendedorAtual ){
-    return vendedorAtual.id == parseInt(req.params.id)
-  })
-  if( !vendedorEncontrado ){
-    res.status( 404 ).send({})
-  } else {
-    res.send( vendedorEncontrado)
-  }
-})
-
-
-app.post("/vendedor/", function( req, res){
-  const vendedorNovo = {
-    id: vendedor.length + 1,
-    nome: req.body.nome,
-    idade: req.body.cnpj
-  };
-  vendedor.push( vendedorNovo );
-  res.send( vendedorNovo);
-});
-
-app.put("/pessoa/:id", function(req, res){
-  const vendedorEncontrado = vendedor.find( function( vendedorAtual){
-    return vendedorAtual.id == parseInt( req.params.id)
-  })
-  if(!vendedorEncontrado){
-    res.status( 404 ).send({})
-  }else {
-    vendedorEncontrado.nome = req.body.nome
-    vendedorEncontrado.cnpj = req.body.cnpj
-    res.send( vendedorEncontrado)
-  }
-});
-
-app.delete("/vendedor/:id", function(req, res){
-  const vendedorEncontrado = vendedor.find(function( vendedorAtual){
-    return vendedorAtual.id == parseInt(req.params.id)
-  });
-if( !vendedorEncontrado ){
-  res.status( 404 ).send( {} );
-} else{
-  const indexVendedor = pessoas.indexOf( vendedorEncontrado);
-  vendedor.splice(indexVendedor, 1);
-  res.send({});
+//2- 
+app.get("/vendedor/:id", async function(req, res){
+ const vendedorSelecionado = await vendedor.vendedor.findByPk(req.params.id,
+{ include: {model: pneus.pneus}}
+ )
+if( vendedorSelecionado == null){
+  res.statusCode(404).send({})
+}else {
+  res.send(vendedorSelecionado);
 }
+})
+
+
+app.post("/vendedor/", async function( req, res){
+  const resultado = await vendedor.vendedor.create({
+    nome:req.body.nome 
+  })
+  res.send(resultado)
+});
+
+app.put("/pessoa/:id", async function(req, res){
+  const resultado = await vendedor.vendedor.update({
+    nome:req.body.nome
+  }, {
+    where:{id: req.params.id}
+  }
+  )
+  if(resultado == 0){
+    res.status(404),send({})
+  } else{
+    res.send(await vendedor.vendedor.findByPk(req.params.id))
+  }
+})
+
+app.delete("/vendedor/:id", async function(req, res){
+  const resultado = await vendedor.vendedor.destroy({
+    where:{
+      id:req.params.id
+    }
+  })
+  if(resultado == 0){
+    res.status(404).send({})
+  } else{
+    res.status(204).send({})
+  }
 })
 
 //questão 3 de subconjunto (Vendedor para pneu)
 app.post("/vendedor/nome/:nome", async function(req,res){
-  const vendedorSele = await vendedor.vendedor.findALL 
+  const vendedorSelecionado = await vendedor.vendedor.findALL 
 {
   include: { model:pneus.pneus}
   where: { nome:req.params.nome}
+
+} if ( vendedorSelecionado == null){
+  res.status(404).send({})
+} else {
+  res.send(vendedorSelecionado)
 }
 })
 

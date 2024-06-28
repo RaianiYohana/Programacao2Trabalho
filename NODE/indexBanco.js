@@ -22,14 +22,3 @@ banco.conexao.sync( function(){
 app.listen( PORTA, function(){
     console.log("Servidor Iniciados na porta" +PORTA)
 })
-
-app.get("/vendedor/", async function(req,res){
-const resultado = await vendedor.vendedor.findALL()
-res.send(resultado)
-})
-
-app.get("/pneus/", async function(req,res){
-    const resultado =  await pneus.pneus.findALL()
-    res.send(resultado)
-})
-
