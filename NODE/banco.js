@@ -12,3 +12,4 @@ process.env.DB_PASSWORD,
 )
 
 module.exports = { conexao }
+
