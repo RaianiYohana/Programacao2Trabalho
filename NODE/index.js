@@ -78,9 +78,7 @@ app.post("/vendedor/nome/:nome", async function(req,res){
 
 // Código da parte dos pneus
 
-// const express = require('express')
-// const app = express()
-// app.use(express.json())
+
 
 const pneus = [
     {id:1, aro: 13, preco: 280, marca: "Michelin"}, //* criar uma lista de pneus   
@@ -88,19 +86,19 @@ const pneus = [
     {id:3, aro: 15, preco: 180, marca: "Michelin"}, //* criar uma lista de pneus
 ]
 
-// const PORTA = 3000
-//   app.listen( PORTA, function(){
-//       console.log("Servidor iniciados na porta "+PORTA);
-// })
 
-app.get("/pneus/", function (req,res){  /**mostra os pneus */
-    res.send( pneus )
+
+app.get("/pneus/", async function (req,res){    /**mostra os pneus */
+    const resultado = await pneus.pneus.findAll()
+    res.send( resultado )
 })
 
-app.get("/pneus/:id", function(req,res){
-    var pneuEncontrado = pneus.find( function( pneuAtual ){
-      return pneuAtual.id == parseInt(req.params.id )
-    } )
+
+
+app.get("/pneus/:id", async function(req,res){  /**  */
+    const pneuEncontrado = await pneus.pneus.findByPk(req.params.id,
+      {include: {model: pneus.pneus}}
+    )
     if( !pneuEncontrado ){
       res.status(404).send({})
     }else{
@@ -108,14 +106,44 @@ app.get("/pneus/:id", function(req,res){
     }
 })
 
-app.post("/pneus/", function( req, res ){  
-    const novoPneu = {
+
+
+app.post("/pneus/", async function( req, res ){  
+    const novoPneu = await pneus.pneus.create({
       id: pneus.length + 1,
-      aro: req.body.aro,
-      preco: req.body.preco,
-      marca: req.body.marca
-    };
-    pneus.push( novoPneu );
-    res.send( novoPneu );
-  });
+      vendedorId: req.body.vendedorId
+
+    })
+    res.send(novoPneu)
+  })
+
+
+
+
+app.put("/pneus/", async function(req,res){
+  const resultado = await pneus.pneus.update({
+    nome:req.body.nome,
+    vendedorId:req.body.vendedorId
+  })
+  if(resultado == 0){
+    res.status(404).send({})
+
+  }else{
+    res.send(await pneus.pneus.findByPk(req.params.id))
+  }
+})
+
+
+app.delete("/pneus/" , async function (req,res){
+  const resultado = await pneus.pneus.destroy({
+    where:{
+      id:req.params.id
+    }
+  })
+  if(resultado==0){
+    res.status(404).send({})
+  }else{
+    res.status(204).send({})
+  }
+})
 
