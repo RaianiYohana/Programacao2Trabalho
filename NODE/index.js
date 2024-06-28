@@ -1,6 +1,16 @@
 const express = require('express')
+const vendedor = require("./vendedor")
+const pneus = require("./pneus")
+
 const app = express()
 app.use(express.json())
+
+app.use(function (req, res, next) {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+  res.setHeader('Access-Control-Allow-Headers', '*');
+  next();
+});
 
 const vendedor = [
 {id:1, nome: "Celso Rescarolli", cnpj:"01.222.770/0002-00"}
@@ -78,7 +88,7 @@ app.post("/vendedor/nome/:nome", async function(req,res){
 
 // Código da parte dos pneus
 
-
+//questao 1
 
 const pneus = [
     {id:1, aro: 13, preco: 280, marca: "Michelin"}, //* criar uma lista de pneus   
@@ -86,27 +96,21 @@ const pneus = [
     {id:3, aro: 15, preco: 180, marca: "Michelin"}, //* criar uma lista de pneus
 ]
 
-
-
 app.get("/pneus/", async function (req,res){    /**mostra os pneus */
     const resultado = await pneus.pneus.findAll()
     res.send( resultado )
 })
 
-
-
-app.get("/pneus/:id", async function(req,res){  /**  */
+app.get("/pneus/:id", async function(req,res){  /* 2? */
     const pneuEncontrado = await pneus.pneus.findByPk(req.params.id,
-      {include: {model: pneus.pneus}}
+      {include: {model: vendedor.vendedor}}
     )
-    if( !pneuEncontrado ){
+    if(pneuEncontrado  == null ){
       res.status(404).send({})
     }else{
       res.send( pneuEncontrado )
     }
 })
-
-
 
 app.post("/pneus/", async function( req, res ){  
     const novoPneu = await pneus.pneus.create({
@@ -116,9 +120,6 @@ app.post("/pneus/", async function( req, res ){
     })
     res.send(novoPneu)
   })
-
-
-
 
 app.put("/pneus/", async function(req,res){
   const resultado = await pneus.pneus.update({
@@ -133,7 +134,6 @@ app.put("/pneus/", async function(req,res){
   }
 })
 
-
 app.delete("/pneus/" , async function (req,res){
   const resultado = await pneus.pneus.destroy({
     where:{
@@ -146,4 +146,6 @@ app.delete("/pneus/" , async function (req,res){
     res.status(204).send({})
   }
 })
+
+/*questao 3 */
 
