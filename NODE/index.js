@@ -99,21 +99,9 @@ app.post("/vendedor/nome/:nome", async function(req,res){
 
 //questao 1
 
-
 app.get("/pneus/", async function (req,res){    /**mostra os pneus */
     const resultado = await pneus.pneus.findAll()
     res.send( resultado )
-})
-
-app.get("/pneus/:id", async function(req,res){  /* 2? */
-    const pneuEncontrado = await pneus.pneus.findByPk(req.params.id,
-      {include: {model: vendedor.vendedor}}
-    )
-    if(pneuEncontrado  == null ){
-      res.status(404).send({})
-    }else{
-      res.send( pneuEncontrado )
-    }
 })
 
 app.post("/pneus/", async function( req, res ){  
@@ -151,5 +139,32 @@ app.delete("/pneus/" , async function (req,res){
   }
 })
 
-/*questao 3 */
+/**Questao 2  */
+app.get("/pneus/:id", async function(req,res){  
+    const pneuEncontrado = await pneus.pneus.findByPk(req.params.id,
+      {include: {model: vendedor.vendedor}}
+    )
+    if(pneuEncontrado  == null ){
+      res.status(404).send({})
+    }else{
+      res.send( pneuEncontrado )
+    }
+})
+
+/*questao 3 Ler subconjunto de registros, buscando por um atributo da entidade A e B (3 pontos). E ́
+necess ́ario ao ler A, buscar todos os registros de B vinculados com ele e vice-versa.*/
+app.get("/pneu/nome/:nome" , async function (req, res){
+  const pneusEscolhido = await pneus.pneus.findAll(
+    {
+      include: { model: vendedor.vendedor},
+      where: { nome:req.params.nome}
+    }
+  )
+  if (pneusEscolhido == null){
+    res.status(404).send({})
+  }else{
+    res.send(pneusEscolhido)
+  }
+})
+
 
