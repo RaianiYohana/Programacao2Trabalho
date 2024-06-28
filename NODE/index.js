@@ -17,9 +17,6 @@ app.use(function (req, res, next) {
   next();
 });
 
-const vendedor = [
-{id:1, nome: "Celso Rescarolli", cnpj:"01.222.770/0002-00"}
-]
 
 const PORTA = 3000 
 app.listen( PORTA, function(){
@@ -31,17 +28,7 @@ app.get("/vendedor/", async function (req,res){
 res.send(resultado);
 })
 
-//2- 
-app.get("/vendedor/:id", async function(req, res){
- const vendedorSelecionado = await vendedor.vendedor.findByPk(req.params.id,
-{ include: {model: pneus.pneus}}
- )
-if( vendedorSelecionado == null){
-  res.statusCode(404).send({})
-}else {
-  res.send(vendedorSelecionado);
-}
-})
+
 
 
 app.post("/vendedor/", async function( req, res){
@@ -78,6 +65,18 @@ app.delete("/vendedor/:id", async function(req, res){
   }
 })
 
+//2- vendedor
+app.get("/vendedor/:id", async function(req, res){
+ const vendedorSelecionado = await vendedor.vendedor.findByPk(req.params.id,
+{ include: {model: pneus.pneus}}
+ )
+if( vendedorSelecionado == null){
+  res.statusCode(404).send({})
+}else {
+  res.send(vendedorSelecionado);
+}
+})
+
 //questão 3 de subconjunto (Vendedor para pneu)
 app.post("/vendedor/nome/:nome", async function(req,res){
   const vendedorSelecionado = await vendedor.vendedor.findALL 
@@ -100,11 +99,6 @@ app.post("/vendedor/nome/:nome", async function(req,res){
 
 //questao 1
 
-const pneus = [
-    {id:1, aro: 13, preco: 280, marca: "Michelin"}, //* criar uma lista de pneus   
-    {id:2, aro: 14, preco: 330, marca: "Michelin"}, //* criar uma lista de pneus 
-    {id:3, aro: 15, preco: 180, marca: "Michelin"}, //* criar uma lista de pneus
-]
 
 app.get("/pneus/", async function (req,res){    /**mostra os pneus */
     const resultado = await pneus.pneus.findAll()
