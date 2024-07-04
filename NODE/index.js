@@ -98,46 +98,11 @@ app.post("/vendedor/nome/:nome", async function(req,res){
 
 // Código da parte dos pneus
 
-//questao 1
+//questao 1 Ler todos os registros da entidade A e B (1 ponto).
 
 app.get("/pneus/", async function (req,res){    /**mostra os pneus */
     const resultado = await pneus.pneus.findAll()
     res.send( resultado )
-})
-
-app.post("/pneus/", async function( req, res ){  
-    const novoPneu = await pneus.pneus.create({
-      id: pneus.length + 1,
-      vendedorId: req.body.vendedorId
-
-    })
-    res.send(novoPneu)
-  })
-
-app.put("/pneus/", async function(req,res){
-  const resultado = await pneus.pneus.update({
-    nome:req.body.nome,
-    vendedorId:req.body.vendedorId
-  })
-  if(resultado == 0){
-    res.status(404).send({})
-
-  }else{
-    res.send(await pneus.pneus.findByPk(req.params.id))
-  }
-})
-
-app.delete("/pneus/" , async function (req,res){
-  const resultado = await pneus.pneus.destroy({
-    where:{
-      id:req.params.id
-    }
-  })
-  if(resultado==0){
-    res.status(404).send({})
-  }else{
-    res.status(204).send({})
-  }
 })
 
 /**Questao 2  */
@@ -169,3 +134,42 @@ app.get("/pneu/nome/:nome" , async function (req, res){
 })
 
 
+/**4-Criar um registro da entidade A e B (2 pontos). E necess ́ario criar o v ́ınculo entre a entidade A e B. */
+app.post("/pneus/", async function( req, res ){  
+    const novoPneu = await pneus.pneus.create({
+      nome: req.body.nome,
+      aro: req.body.aro,
+      marca: req.body.marca,
+      vendedorId: req.body.vendedorId
+
+    })
+    res.send(novoPneu)
+  })
+
+/**5-Atualizar um registro da entidade A e B (2 pontos). E necess ́ario criar o v ́ınculo entre a entidade A e B*/
+app.put("/pneus/", async function(req,res){
+  const resultado = await pneus.pneus.update({
+    nome:req.body.nome,
+    vendedorId:req.body.vendedorId
+  })
+  if(resultado == 0){
+    res.status(404).send({})
+
+  }else{
+    res.send(await pneus.pneus.findByPk(req.params.id))
+  }
+})
+
+/**6-Excluir um registro da entidade A e B (1 ponto). */
+app.delete("/pneus/:id",async function(req,res){
+  const resultado = await pneus.pneus.destroy({
+      where:{
+          id:req.params.id
+      }
+  })
+  if( resultado == 0 ){
+      res.status(404).send({})
+  }else{
+      res.status(204).send({})
+  }
+})

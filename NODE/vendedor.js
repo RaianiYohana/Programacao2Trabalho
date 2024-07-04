@@ -2,7 +2,7 @@ const sequelize = require("sequelize");
 const banco = require("./banco")
 const pneus = require("./pneus")
 
-var professor = banco.conexao.define(
+var vendedor = banco.conexao.define(
     "vendedor",
     {
         id:{
@@ -22,7 +22,7 @@ var professor = banco.conexao.define(
     { timestamps: false }
 )
 
-professor.hasMany( pneus.pneus )
+vendedor.hasMany( pneus.pneus )
 pneus.pneus.belongsTo( vendedor )
 
 module.exports = {vendedor}
