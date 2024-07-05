@@ -107,15 +107,15 @@ res.send(resultado)
 
 // Código da parte dos pneus
 
-//questao 1
-
+//questao 1 Ler todos os registros da entidade A e B (1 ponto).
 
 app.get("/pneus/", async function (req,res){    /**mostra os pneus */
     const resultado = await pneus.pneus.findAll()
     res.send( resultado )
 })
 
-app.get("/pneus/:id", async function(req,res){  /* 2? */
+/**Questao 2  */
+app.get("/pneus/:id", async function(req,res){  
     const pneuEncontrado = await pneus.pneus.findByPk(req.params.id,
       {include: {model: vendedor.vendedor}}
     )
@@ -126,15 +126,36 @@ app.get("/pneus/:id", async function(req,res){  /* 2? */
     }
 })
 
+/*questao 3 Ler subconjunto de registros, buscando por um atributo da entidade A e B (3 pontos). E ́
+necess ́ario ao ler A, buscar todos os registros de B vinculados com ele e vice-versa.*/
+app.get("/pneu/nome/:nome" , async function (req, res){
+  const pneusEscolhido = await pneus.pneus.findAll(
+    {
+      include: { model: vendedor.vendedor},
+      where: { nome:req.params.nome}
+    }
+  )
+  if (pneusEscolhido == null){
+    res.status(404).send({})
+  }else{
+    res.send(pneusEscolhido)
+  }
+})
+
+
+/**4-Criar um registro da entidade A e B (2 pontos). E necess ́ario criar o v ́ınculo entre a entidade A e B. */
 app.post("/pneus/", async function( req, res ){  
     const novoPneu = await pneus.pneus.create({
-      id: pneus.length + 1,
+      nome: req.body.nome,
+      aro: req.body.aro,
+      marca: req.body.marca,
       vendedorId: req.body.vendedorId
 
     })
     res.send(novoPneu)
   })
 
+/**5-Atualizar um registro da entidade A e B (2 pontos). E necess ́ario criar o v ́ınculo entre a entidade A e B*/
 app.put("/pneus/", async function(req,res){
   const resultado = await pneus.pneus.update({
     nome:req.body.nome,
@@ -148,18 +169,16 @@ app.put("/pneus/", async function(req,res){
   }
 })
 
-app.delete("/pneus/" , async function (req,res){
+/**6-Excluir um registro da entidade A e B (1 ponto). */
+app.delete("/pneus/:id",async function(req,res){
   const resultado = await pneus.pneus.destroy({
-    where:{
-      id:req.params.id
-    }
+      where:{
+          id:req.params.id
+      }
   })
-  if(resultado==0){
-    res.status(404).send({})
+  if( resultado == 0 ){
+      res.status(404).send({})
   }else{
-    res.status(204).send({})
+      res.status(204).send({})
   }
 })
-
-/*questao 3 */
-
