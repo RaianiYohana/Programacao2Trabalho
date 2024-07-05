@@ -92,7 +92,16 @@ app.post("/vendedor/nome/:nome", async function(req,res){
 })
 
 //4 - vendedor
+app.post("/vendedor/", async function (req,res){
+  const resultado = await vendedor.vendedor.create(
+    {
+      nome: req.body.nome,
+      cnpj: req.body.cnpj
+    }
+  )}
+res.send(resultado)
 
+//5
 
 
 
