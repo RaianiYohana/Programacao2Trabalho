@@ -2,6 +2,7 @@ const banco = require("./banco")
 const express = require('express')
 const vendedor = require("./vendedor")
 const pneus = require("./pneus")
+const { where } = require("sequelize")
 
 const app = express()
 app.use(express.json())
@@ -72,20 +73,22 @@ app.get("/vendedor/:id", async function(req, res){
 { include: {model: pneus.pneus}}
  )
 if( vendedorSelecionado == null){
-  res.statusCode(404).send({})
+  res.status(404).send({})
 }else {
   res.send(vendedorSelecionado);
 }
 })
 
 //questão 3 de subconjunto (Vendedor para pneu)
-app.post("/vendedor/nome/:nome", async function(req,res){
-  const vendedorSelecionado = await vendedor.vendedor.findALL 
-{
-  include: { model:pneus.pneus}
-  where: { nome:req.params.nome}
+app.get("/vendedor/nome/:nome", async function(req,res){
+  const vendedorSelecionado = await vendedor.vendedor.findAll(
+    {
+      include: { model:pneus.pneus},
+      where: { nome:req.params.nome}
+    }
+  ) 
 
-} if ( vendedorSelecionado == null){
+if ( vendedorSelecionado == null){
   res.status(404).send({})
 } else {
   res.send(vendedorSelecionado)
@@ -105,13 +108,18 @@ res.send(resultado)
 
 
 //5
-app.put("/vendedor/", async function(req,res){
+app.put("/vendedor/:id", async function(req,res){
+  console.log(req.params.id)
   const resultado = await vendedor.vendedor.update({
     nome:req.body.nome,
+    cnpj:req.body.cnpj,
     pneusId:req.body.pneusId
+  },{
+    where:{id:req.params.id}
   })
   if(resultado == 0){
     res.status(404).send({})
+
   }else{
     res.send(await vendedor.vendedor.findByPk(req.params.id))
   }
@@ -157,7 +165,7 @@ necess ́ario ao ler A, buscar todos os registros de B vinculados com ele e vice
 app.get("/pneu/nome/:nome" , async function (req, res){
   const pneusEscolhido = await pneus.pneus.findAll(
     {
-      include: { model: vendedor.vendedor},
+      include: { model:vendedor.vendedor},
       where: { nome:req.params.nome}
     }
   )
@@ -182,10 +190,12 @@ app.post("/pneus/", async function( req, res ){
   })
 
 /**5-Atualizar um registro da entidade A e B (2 pontos). E necess ́ario criar o v ́ınculo entre a entidade A e B*/
-app.put("/pneus/", async function(req,res){
+app.put("/pneus/:id", async function(req,res){
   const resultado = await pneus.pneus.update({
     nome:req.body.nome,
     vendedorId:req.body.vendedorId
+  },{
+    where:{id:req.params.id}
   })
   if(resultado == 0){
     res.status(404).send({})
