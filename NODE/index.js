@@ -23,13 +23,11 @@ app.listen( PORTA, function(){
   console.log("Servidor iniciados na porta" +PORTA)  
 })
 
+//1 - mostra o vendedor
 app.get("/vendedor/", async function (req,res){
   const resultado = await vendedor.vendedor.findAll()
 res.send(resultado);
 })
-
-
-
 
 app.post("/vendedor/", async function( req, res){
   const resultado = await vendedor.vendedor.create({
@@ -99,7 +97,8 @@ app.post("/vendedor/", async function (req,res){
   const resultado = await vendedor.vendedor.create(
     {
       nome: req.body.nome,
-      cnpj: req.body.cnpj
+      cnpj: req.body.cnpj,
+      pneuId: req.body.pneuId
     })
 res.send(resultado)
   })
