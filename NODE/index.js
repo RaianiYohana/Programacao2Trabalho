@@ -33,14 +33,17 @@ res.send(resultado);
 
 app.post("/vendedor/", async function( req, res){
   const resultado = await vendedor.vendedor.create({
-    nome:req.body.nome 
+    nome:req.body.nome,
+    cnpj:req.body.cnpj
+
   })
   res.send(resultado)
 });
 
 app.put("/pessoa/:id", async function(req, res){
   const resultado = await vendedor.vendedor.update({
-    nome:req.body.nome
+    nome:req.body.nome,
+    cnpj:req.body.cnpj
   }, {
     where:{id: req.params.id}
   }
@@ -97,13 +100,37 @@ app.post("/vendedor/", async function (req,res){
     {
       nome: req.body.nome,
       cnpj: req.body.cnpj
-    }
-  )}
+    })
 res.send(resultado)
+  })
+
 
 //5
+app.put("/vendedor/", async function(req,res){
+  const resultado = await vendedor.vendedor.update({
+    nome:req.body.nome,
+    pneusId:req.body.pneusId
+  })
+  if(resultado == 0){
+    res.status(404).send({})
+  }else{
+    res.send(await vendedor.vendedor.findByPk(req.params.id))
+  }
+})
 
-
+//6
+app.delete("/vendedor/:id",async function(req,res){
+  const resultado = await vendedor.vendedor.destroy({
+      where:{
+          id:req.params.id
+      }
+  })
+  if( resultado == 0 ){
+      res.status(404).send({})
+  }else{
+      res.status(204).send({})
+  }
+})
 
 // Código da parte dos pneus
 
