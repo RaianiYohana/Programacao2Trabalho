@@ -1,5 +1,5 @@
 const banco = require("./banco") // importa o módulo banco que lida com a conexão e operação do banco de dados
-const express = require('express') // importa o módulo express que é um framework web para Node.js, que simplifica a criação de servidores web
+const express = require('express') // importa o express que é um framework web para Node.js, que simplifica a criação de servidores web
 const vendedor = require("./vendedor") // importa o módulo vendedor onde contêm definições específicas do modelo e funções relacionadas
 const pneus = require("./pneus") // importa o módulo pneus, onde contêm definições específicas do modelo e funções relacionadas
 const { where } = require("sequelize") // importa o método "where" do sequelize para consultas específicas
@@ -33,18 +33,17 @@ app.listen( PORTA, function(){
   const resultado = await vendedor.vendedor.create({ //criar
     nome:req.body.nome,
     cnpj:req.body.cnpj
-
   })
   res.send(resultado)
 });
 
-// Busca todos os vendedores e envia a resposta
+// Busca todos os vendedores e envia a resposta posteriormente
 app.get("/vendedor/", async function (req,res){  
   const resultado = await vendedor.vendedor.findAll() //encontrar tudo
 res.send(resultado);
 })
 
-// Atualiza os dados de um vendedor com base no ID e os dados do corpo da requisição. Envia o vendedor atualizado
+// Atualiza os dados de um vendedor com base no ID e os dados do corpo da requisição. Envia o vendedor atualizado depois da atualização
 app.put("/pessoa/:id", async function(req, res){
   const resultado = await vendedor.vendedor.update({ //atualizar
     nome:req.body.nome,
@@ -70,15 +69,15 @@ app.delete("/vendedor/:id", async function(req, res){
   if(resultado == 0){
     res.status(404).send({})
   } else{
-    res.status(204).send({})
+    res.status(204).send({})  // ok e não tem resposta
   }
 })
 
 //2- vendedor
 // Pega um vendedor pelo seu id e inclui seus pneus relacionados a ele
 app.get("/vendedor/:id", async function(req, res){
- const vendedorSelecionado = await vendedor.vendedor.findByPk(req.params.id,
-{ include: {model: pneus.pneus}}
+ const vendedorSelecionado = await vendedor.vendedor.findByPk(req.params.id,  //find by pk: encontrar pela primary key
+{ include: {model: pneus.pneus}} // mostra em conjunto quando eu pegar o vendedor pelo id 
  )
 if( vendedorSelecionado == null){
   res.status(404).send({})
@@ -104,7 +103,7 @@ if ( vendedorSelecionado == null){
 })
 
 //4 - vendedor
-// cria um novo vendedor com base nos dados fornecidos e inclui o Id do pneu
+// cria um novo vendedor com base nos dados fornecidos e inclui o Id do pneu.
 app.post("/vendedor/", async function (req,res){
   const resultado = await vendedor.vendedor.create(
     {
@@ -117,7 +116,7 @@ res.send(resultado)
 
 
 //5
-//Atualiza um vendedor pelo id 
+//Atualiza um vendedor pelo seu id 
 app.put("/vendedor/:id", async function(req,res){
   console.log(req.params.id)
   const resultado = await vendedor.vendedor.update({
@@ -153,6 +152,7 @@ app.delete("/vendedor/:id",async function(req,res){
 // Código da parte dos pneus
 
 //questao 1 Ler todos os registros da entidade A e B (1 ponto).
+
 //Busca todos os pneus inseridos
 app.get("/pneus/", async function (req,res){    /**mostra os pneus */
     const resultado = await pneus.pneus.findAll()
@@ -160,6 +160,7 @@ app.get("/pneus/", async function (req,res){    /**mostra os pneus */
 })
 
 /**Questao 2  */
+
 // Busca todos os pneus inseridos pelo id e inclui o nome dos pneus relacionados.
 app.get("/pneus/:id", async function(req,res){  
     const pneuEncontrado = await pneus.pneus.findByPk(req.params.id,
@@ -207,6 +208,8 @@ app.post("/pneus/", async function( req, res ){
 app.put("/pneus/:id", async function(req,res){
   const resultado = await pneus.pneus.update({
     nome:req.body.nome,
+    aro:req.body.aro,
+    marca:req.body.marca,
     vendedorId:req.body.vendedorId
   },{
     where:{id:req.params.id}

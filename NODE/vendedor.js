@@ -1,4 +1,4 @@
-const sequelize = require("sequelize"); // importa o ORM Sequelize que permite a interaçaõ com o banco de dados
+const sequelize = require("sequelize"); // importa o ORM (Mapeamento de Objetos Relacionais) Sequelize que permite a interaçaõ com o banco de dados
 const banco = require("./banco") //importa o módulo banco, que contém a configuração e a conexão com o banco de dados
 const pneus = require("./pneus") // importa o módulo pneu, onde contém o modelo pneu
 
