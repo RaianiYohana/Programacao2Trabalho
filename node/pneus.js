@@ -6,7 +6,7 @@ var pneus = banco.conexao.define( //cria um modelo pneus e suas respectivas colu
     "pneus",
     {
         id:{
-            type:sequelize.INTEGER.UNSIGNED,  // é a chave primária e é auto increment
+            type:sequelize.INTEGER.UNSIGNED,  // é a chave primária e é auto incrementada
             primaryKey: true,
             autoIncrement:true
         },
